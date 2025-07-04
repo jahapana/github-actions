@@ -1,0 +1,26 @@
+name: My First Workflow #Name of the workflow - just identifies 
+#name is reserved key word
+
+on: # Defines when to Trigger this workflow
+#on is reserved key word to define the list trigger
+
+  workflow_dispatch: # Allows to run this workflow manually from the Actions tab
+  #This is inbuilt event provided by github actions
+
+jobs: # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+#jobs is reserved key for defining list of jobs
+
+  my-first-job: # The name of the job - can be anything
+    
+    runs-on: ubuntu-latest # The type of runner that the job will run on
+    # list of runners provided by github - inbuild runners
+    #runs-on is reserved key word allows to define runner
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    #steps is reserved key to list all the steps
+     
+      # Runs a single command using the runners shell
+      - name: Welcome message #name of the step
+        #name is reserved key word
+        run: echo "Hello world"
