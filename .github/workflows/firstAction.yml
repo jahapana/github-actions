@@ -24,3 +24,8 @@ jobs: # A workflow run is made up of one or more jobs that can run sequentially 
       - name: Welcome message #name of the step
         #name is reserved key word
         run: echo "Hello world"
+
+      - name: Multi line shell command
+        run: |
+          echo "Line1 Command"
+          echo "Line2 Command"
