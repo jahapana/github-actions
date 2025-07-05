@@ -1,0 +1,31 @@
+name: Multi job workflow
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Installing latest version of Node JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Installing Dependencies
+        run: npm ci
+      - name: Running Test cases
+        run: npm test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Setup node environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Project
+        run: npm run build
+      - name: Build Success Message
+        run: echo "Build SUCCESS"
