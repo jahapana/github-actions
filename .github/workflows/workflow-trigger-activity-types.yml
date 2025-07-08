@@ -1,0 +1,13 @@
+name: Trigger - Activity Types
+on:
+  pull_request: #Trigger 1
+    types:
+      - opened
+      - edited
+  workflow_dispatch: #Trigger 2
+jobs:
+  simple:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simple Echo
+        run: echo "This gets triggred on PullRequest - opened or edited"
