@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - main
-      - dev
+      - develop
   workflow_dispatch:
 jobs:
   test:
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
     steps:
       - name: Get Code
         uses: actions/checkout@v4
