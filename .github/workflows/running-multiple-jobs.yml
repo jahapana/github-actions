@@ -1,5 +1,10 @@
 name: Multi job workflow
-on: push
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/workflow/*"
 jobs:
   test:
     runs-on: ubuntu-latest

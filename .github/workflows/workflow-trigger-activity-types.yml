@@ -4,7 +4,15 @@ on:
     types:
       - opened
       - edited
+    branches:
+      - main # filters the PR created for these branches only
   workflow_dispatch: #Trigger 2
+  push:
+    branches:
+      - main
+      - dev*
+    paths:
+      - ".github/*" # changes done to these only files from the specified branches only
 jobs:
   simple:
     runs-on: ubuntu-latest
