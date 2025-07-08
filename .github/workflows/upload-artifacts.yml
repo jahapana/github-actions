@@ -1,0 +1,35 @@
+name: Upload Artifacts # artifacts are nothing but the output of jobs
+on:
+  push:
+    branches:
+      - main
+      - dev
+jobs:
+  test:
+    runs-on: ubuntu-lates
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Unit Test cases
+        run: npm run test
+  build-upload:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build Project
+        run: npm run build
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4 # predefied action to upload build(artifact) files
+        with:
+          name: project-dist # Name to access the uploaded artifacts
+          path: | # list of files / paths to be uploaded to make use of them
+            dist
+            package.json
+      - name: Success Message
+        run: echo "Build and Uploaded Artifacts successfuly"
