@@ -1,5 +1,6 @@
-name: Multi job workflow
-on: push
+name: Multi workflow triggers
+#array of events which triggers this workflow
+on: [push, workflow_dispatch]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,10 +15,7 @@ jobs:
         run: npm ci
       - name: Running Test cases
         run: npm test
-  build: # second job with complete separate runner and list of steps
-    needs: test # condition to start this job
-    #[job1, job2] -> we can pass list of jobs to be finished before starting this job
-    # This job gets started only if needs job are success
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Get the code
