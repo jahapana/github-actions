@@ -1,4 +1,5 @@
-name: Upload Artifacts # artifacts are nothing but the output of jobs
+name: Upload and Download Artifacts # artifacts are nothing but the output of jobs
+# In one job build and upload the artifacts and make use of them in other job by download
 on:
   push:
     branches:
@@ -34,3 +35,14 @@ jobs:
             package.json
       - name: Success Message
         run: echo "Build and Uploaded Artifacts successfuly"
+  deploy-download:
+    needs: build-upload # should try after finishing above upload job because then only we can download the artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the uploaded artifact
+        uses: actions/download-artifact@v4 # predefined action to download the artifact
+        with:
+          name: project-dist # name should be same as the name of uploaded artifact from above job
+      - name: Check the output of above download
+        run: ls # as the above download command gets the uploaded zip artifact and unzip it in current directory
+

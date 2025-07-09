@@ -1,0 +1,33 @@
+name: Job Outputs
+on:
+  workflow_dispatch:
+jobs:
+  job-output-publish: # job name
+    runs-on: ubuntu-latest # runner information
+    outputs: # list all the outputs of job that can be used across the other jobs
+      my-output-var1: ${{ steps.publish-step-id.outputs.step-output-var }}
+      # steps - is a in built context
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
+      - name: Build the Project
+        run: npm run build
+      - name: See the generated build file name
+        run: find dist/assets/*.js -type f -execdir echo '{}' ';'
+      - name: publish the output
+        id: publish-step-id # unique identifier of the step to captur the output
+        # Old syntax of writing output variable
+        #run: find dist/assets/*js -type f -execdir echo '::set-output name=step-output-var::{}' ';'
+        run: find dist/assets/*js -type f -execdir echo 'step-output-var={}' >> $GITHUB_OUTPUT ';'
+  job-output-use:
+    needs: job-output-publish # Run this job after publishing outputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the output from other job
+        run: echo '${{ needs.job-output-publish.outputs.my-output-var1 }}'
+        # use the same variable name gave in outputs of the job
+        # needs is inbuit context
+      - name: Successfully completed
+        run: echo "Completed....."
