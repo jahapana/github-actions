@@ -1,0 +1,35 @@
+name: Caching Dependencies
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache Dependencies
+        uses: actions/cache@v4 # predefiend cache action
+        # looks at the path and picks the files to cache them with the give key
+        # if any change in key it clears the old cache and updates with new
+        with:
+          path: ~/.npm
+          key: dependency-cache-${{ hashFiles('**/package-lock.json') }}
+        # This cache is placed at central location so all other jobs and work flows will be used same
+        # we need to specify the same step in each and every step where we want use this cache
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: dependency-cache-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
