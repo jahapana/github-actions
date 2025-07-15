@@ -1,0 +1,37 @@
+name: Enivironment Variables
+on:
+  workflow_dispatch:
+env: # workflow level variable declaration
+  WORKFLOW_LEVEL_VAR1: my-workflow-value1
+  WORKFLOW_LEVEL_VAR2: my-workflow-value2
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print workflow level variable
+        run: echo "aproach 1 ---- $WORKFLOW_LEVEL_VAR1"
+        # interpolation of environment variables
+  job2:
+    runs-on: ubuntu-latest
+    env: # job level variable declaration
+      JOB_LEVEL_VAR1: my-job-value1
+    steps:
+      - name: Print workflow level variable
+        run: echo "aproah 2 ---- ${{ env.WORKFLOW_LEVEL_VAR2 }}"
+        # env is inbuilt context object to access environment vaiables
+      - name: Print job level variable
+        run: echo "aproah 1 ---- $JOB_LEVEL_VAR1"
+      - name: Print step level variable
+        run: echo "approach 2 ---- ${{ env.STEP_LEVEL_VAR1 }}"
+        env: # step level environment variable declartion
+          STEP_LEVEL_VAR1: my-own-step-value1
+  job3:
+    runs-on: ubuntu-latest
+    env:
+      SECRET_DB_NAME: ${{ secrets.DB_NAME }}
+      # secrets is inbuilt context object to access secrets
+    steps:
+      - name: Getting secret variable
+        run: echo "Git repo secret variable ---- ${{ env.SECRET_DB_NAME }}"
+        # secret is always a secret 
+        # it will not be exposed but will be used in code and workflow execution
