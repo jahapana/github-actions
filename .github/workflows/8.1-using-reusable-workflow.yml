@@ -9,3 +9,5 @@ jobs:
         run: echo "Executing Reusable Workflow"
   use-other-workflow:
     uses: ./.github/workflows/8-reusable-workflow.yml
+    with:
+      input-arg1: Passing required arg

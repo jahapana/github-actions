@@ -1,6 +1,19 @@
 name: Resuable workflow
 on:
+  # To reuse this workflow in other workflow jobs we need this 
+  # in built event trigger
   workflow_call:
+    inputs:
+      input-arg1:
+        description: "Tells about the input-arg1"
+        type: string
+        default: "Default to something"
+        required: true # while using this workflow we need to pass this input
+      input-arg2:
+        description: "Tells about input-arg2"
+        type: string
+        required: false
+        default: 'anything'
   workflow_dispatch:
 jobs:
   simple-job:
@@ -8,3 +21,8 @@ jobs:
     steps:
       - name: Echo something
         run: echo "Executed Reusable Workflow"
+      - name: Echo arg1
+        run: echo "${{ inputs.input-arg1 }}"
+        # inputs is inbuilt context which holds the inputs passed while using this workflow
+      - name: Echo arg2
+        run: echo "${{ inputs.input-arg2 }}"
