@@ -21,10 +21,19 @@ on:
       # this is same identifier we use for passing secrtes from calling jobs
         required: true # makes this secret mandatory
         # we can provide default values
+    outputs: #To return some output from this Reusable workflows to the called job
+      reusable-workflow-output-var1: # any name we want to hold the output from this workflow
+        description: Tells about this output variable
+        value: ${{ jobs.simple-job.outputs.job-output-var }}
+        # jobs is inbuilt context object can be used only in reusable workflows
+        # get the any output value from the jobs of this workflow and assign here
   workflow_dispatch:
 jobs:
   simple-job:
     runs-on: ubuntu-latest
+    outputs:
+      #job level output by reading results from steps using step id
+      job-output-var: ${{ steps.step-id-1.outputs.step-output-var }}
     steps:
       - name: Echo something
         run: echo "Executed Reusable Workflow"
@@ -36,3 +45,7 @@ jobs:
       - name: Echo secrets
         run: echo "${{ secrets.secret1 }}"
         # secrets is inbuilt context which provides list of secrets passed
+      - name: Return some Output
+        id: step-id-1
+        # outputs some result from this step and assign to step level variable
+        run: echo 'step-output-var={'output from reusable workflow'}' >> $GITHUB_OUTPUT

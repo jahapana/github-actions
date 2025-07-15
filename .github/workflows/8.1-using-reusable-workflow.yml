@@ -17,3 +17,9 @@ jobs:
     secrets: # to provide list of secret to the above workflow
       secret1: My secret
       # with the same name we declared in that workflow
+  print-output:
+    needs: use-other-workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print output from above reused workflow
+        run: echo ${{ needs.use-other-workflow.outputs.reusable-workflow-output-var1 }}
