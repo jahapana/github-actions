@@ -1,0 +1,18 @@
+name: Matrix execution
+on:
+  workflow_dispatch:
+jobs:
+  matrix-job:
+    strategy: # inbuilt key word for defining strategies
+      matrix: # inbuilt keyword for matrix
+        # list of args we can use in our job and steps
+        arg1: [12, 13, 14]
+        arg2: ['Hi', 'Hello']
+    # for all the above args combination same work flow job gets executed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo arg1
+        run: echo ${{ matrix.arg1 }}
+        # matrix is inbuilt context to read the args we declared in the strategy
+      - name: Echo arg2
+        run: echo ${{ matrix.arg2 }}
