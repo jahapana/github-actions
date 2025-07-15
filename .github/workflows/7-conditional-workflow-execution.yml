@@ -1,0 +1,94 @@
+name: Conditional execution of Workflow
+on:
+  workflow_dispatch:
+jobs:
+  lint-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        id: dependency-cache # id of this step
+        uses: actions/cache@v4
+        with:
+          # path: ~/.npm
+          path: node_modules
+          # instead of finding in npm folder we cache entire node_modules
+          key: dependencies-cache-${{ hashFiles('**/package.lock.json') }}
+      - name: Install dependencies
+        if: steps.dependency-cache.outputs.cache-hit != 'true'
+        # steps is inbuilt context
+        # cache-hit is output of the cache actions used
+        # if cache is found it gives true or else false
+        run: npm ci
+      - name: Run Lint Code
+        run: npm run lint
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: dependencies-cache-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Test code
+        id: test-step # TO identify the result of this step
+        run: npm run test
+        # Step level condition to execute only if test-step is failed
+        # If any other step fails below if condition will not pass so step will not execute
+      - name: Upload test results as Artifact
+        # if: ${{ failure() && steps.test-step.outcome == 'failure' }}
+        if: failure() && steps.test-step.outcome == 'failure'
+        # steps is inbuilt context to get specific step and its result
+        # outcome is inbuilt context from steps context which gives the result of the step
+        # outcome values can be - failure / success / cancelled / skipped
+        # failure() is a special function to decide about the step to execute or not
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-result
+          path: test.json
+  build-job:
+    needs: test-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: dependencies-cache-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build code
+        run: npm run build
+      - name: Upload Build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist
+  deploy-job:
+    needs: build-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+      - name: List the build files
+        run: ls
+      - name: Deploy Success message
+        run: echo "Workflow completed successfully....."
+  report-failure-job:
+    needs: [lint-job, deploy-job]
+    if: failure() # job level condition to decide about this job
+    # it gets executed only if any of the steps failed
+    # basically this job waits for its dependent jobs and their job chain
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show the context
+        run: echo ${{ toJSON(github) }}
