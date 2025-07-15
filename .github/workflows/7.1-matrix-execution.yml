@@ -8,6 +8,18 @@ jobs:
         # list of args we can use in our job and steps
         arg1: [12, 13, 14]
         arg2: ['Hi', 'Hello']
+        # with above args matrix prepares list of combos like
+        # 12 HI, 12 Hello, 13 HI, 13 Hello, 14 Hi, 14 Hello
+        include:
+        # if we want new instance with single combination we can pass them with include
+        # this will run the job with one more new set 
+        # if we add these in above args then those will create unnessary combination
+          - arg1: 15
+            arg2: 'New Combo'
+        exclude:
+        # if we want any combination not to be executed then we add them here
+          - arg1: 14
+            arg2: 'Hello'
     # for all the above args combination same work flow job gets executed
     runs-on: ubuntu-latest
     steps:

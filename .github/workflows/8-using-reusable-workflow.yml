@@ -1,0 +1,11 @@
+name: Using Resuable workflow
+on:
+  workflow_dispatch
+jobs:
+  simple-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo something
+        run: echo "Executing Reusable Workflow"
+  use-other-workflow:
+    uses: ./.gitub/workflows/8-reusable-workflow.yml
