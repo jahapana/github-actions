@@ -3,8 +3,9 @@ on:
   # To reuse this workflow in other workflow jobs we need this 
   # in built event trigger
   workflow_call:
-    inputs:
-      input-arg1:
+    inputs: # reserved keyword to tell about the inputs we get
+      input-arg1: # any name we want to call our argument we receive from calling job
+      # this is the same name we need to use from the workflow > job from where we initiate it
         description: "Tells about the input-arg1"
         type: string
         default: "Default to something"
@@ -14,6 +15,12 @@ on:
         type: string
         required: false
         default: 'anything'
+    secrets: # same as inputs we can get some secrets
+    # secrets is reserved keyword
+      secret1: # any name we want to assign our secret
+      # this is same identifier we use for passing secrtes from calling jobs
+        required: true # makes this secret mandatory
+        # we can provide default values
   workflow_dispatch:
 jobs:
   simple-job:
@@ -26,3 +33,6 @@ jobs:
         # inputs is inbuilt context which holds the inputs passed while using this workflow
       - name: Echo arg2
         run: echo "${{ inputs.input-arg2 }}"
+      - name: Echo secrets
+        run: echo "${{ secrets.secret1 }}"
+        # secrets is inbuilt context which provides list of secrets passed

@@ -9,5 +9,11 @@ jobs:
         run: echo "Executing Reusable Workflow"
   use-other-workflow:
     uses: ./.github/workflows/8-reusable-workflow.yml
-    with:
+    # path of the workflow defined with workflow_call event
+    with: # to provide list of inputs
       input-arg1: Passing required arg
+      # with the same name we declared in the above workflow
+      # we must pass the required inputs defined in that workflow
+    secrets: # to provide list of secret to the above workflow
+      secret1: My secret
+      # with the same name we declared in that workflow
