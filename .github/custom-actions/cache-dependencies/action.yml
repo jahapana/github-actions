@@ -1,0 +1,19 @@
+name: Cache and Install dependencies
+description: Get the dependencies and cache them
+runs: # reserved key word
+  using: composite # reserved key words
+  # This will tell GitHub Actions that this is a custom composite action
+  steps:
+    - name: Cache Dependencies
+      id: dependency-cache-step
+      uses: actions/cache@v4
+      # we can use other actions in your own custom actions
+      with:
+        path: node_modules
+        key: dependency-cache-${{ hashFiles('**/package-lock.json') }}
+    - name: Install Dependencies if required
+      if: steps.dependency-cache-step.outputs.cache-hit != 'true'
+      run: npm ci
+      shell: bash
+      # special key that must be added if we are using the run command
+      # we choose which shell should be used for executing the step

@@ -1,0 +1,13 @@
+name: Using Custom actions
+on:
+  workflow_dispatch:
+jobs:
+  lint-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Custom Action to Cache & Install dependencies
+        uses: ./.github/custom-actions/cache-dependencies
+      - name: Run lint
+        run: npm run lint
