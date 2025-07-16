@@ -5,6 +5,10 @@ inputs: # To get some inputs while using this custom action
     description: To get whether to cache dependencies or not
     required: false
     default: 'true'
+outputs:
+  output-cache-hit:
+    description: "Whether cache hit or not"
+    value: ${{ steps.install-step.outputs.install-step-result }}
 runs: # reserved key word
   using: composite # reserved key words
   # This will tell GitHub Actions that this is a custom composite action
@@ -20,9 +24,12 @@ runs: # reserved key word
         path: node_modules
         key: dependency-cache-${{ hashFiles('**/package-lock.json') }}
     - name: Install Dependencies if required
+      id: install-step
       # updating condition to make use of input to decide whether to install dependencies or not
       if: steps.dependency-cache-step.outputs.cache-hit != 'true' || inputs.input-arg-should-cache != 'true'
-      run: npm ci
+      run: |
+        npm ci
+        echo "install-step-result={${{ steps.dependency-cache-step.outputs.cache-hit || inputs.input-arg-should-cache }}}" >> $GITHUB_OUTPUT
       shell: bash
       # special key that must be added if we are using the run command
       # we choose which shell should be used for executing the step

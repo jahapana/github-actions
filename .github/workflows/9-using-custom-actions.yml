@@ -8,8 +8,11 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
       - name: Custom Action to Cache & Install dependencies
+        id: custom-action-call
         uses: ./.github/custom-actions/cache-dependencies
         with:
           input-arg-should-cache: 'false'
+      - name: Show Custom Action Result
+        run: echo ${{ steps.custom-action-call.outputs.output-cache-hit }}
       - name: Run lint
         run: npm run lint
