@@ -1,4 +1,4 @@
-name: Using Custom actions
+name: Using Custom actions - Composition
 on:
   workflow_dispatch:
 jobs:

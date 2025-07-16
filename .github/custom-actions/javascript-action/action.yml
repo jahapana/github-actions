@@ -1,0 +1,5 @@
+name: Javascript Action
+description: Custom action with Javascript action type
+runs:
+  using: node20
+  main: script.js
