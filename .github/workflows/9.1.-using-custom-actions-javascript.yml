@@ -4,7 +4,7 @@ on:
 jobs:
   deploy-s3-job:
     runs-on: ubuntu-latest
-    steps:
+    steps: # Get the code and Test and Build
       - name: Get code
         uses: actions/checkout@v4
       - name: Custom Action to cache dependencies and Install dependencies
@@ -12,27 +12,27 @@ jobs:
         uses: ./.github/custom-actions/cache-dependencies
       - name: Test
         run: npm run test
-      - name: Build
+      - name: Build #upload build artifacts 
         run: npm run build
       - name: upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-dist
           path: dist
-      - name: download Artifact
+      - name: download Artifact # Get the build files from artifact
         uses: actions/download-artifact@v4
         with:
           name: build-dist
-          path: ./dist
+          path: ./dist # can be downloaded to specific path
       - name: Deploy the build files to S3 with custom javascript action
         id: custom-javascript-action-call
-        uses: ./.github/custom-actions/javascript-action
-        with:
+        uses: ./.github/custom-actions/javascript-action # Using custom Javascript action
+        with: # Passing in the inputs
           S3-BUCKET-NAME: github-actions-project1
           S3-BUCKT-REGION: ap-south-1
           BUILD-LOCATION: ./dist
-        env:
+        env: # Passing some AWS secrets to run aws commands to upload to S3
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Output the deployed environment url
+      - name: Output the deployed environment url # Finally printing output from above action
         run: echo ${{ steps.custom-javascript-action-call.outputs.hosted-url }}

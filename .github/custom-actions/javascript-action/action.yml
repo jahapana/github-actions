@@ -1,7 +1,7 @@
 name: Javascript Action
 description: Custom action with Javascript action type
-inputs:
-  S3-BUCKET-NAME:
+inputs: # Inputs we pass while calling this custom action
+  S3-BUCKET-NAME: # Any name and its props below
     description: Bucket name of the S# where we want to deploy our static website
     required: true
   S3-BUCKT-REGION:
@@ -11,9 +11,10 @@ inputs:
   BUILD-LOCATION:
     description: path of the build folder LOCATION
     required: true
-outputs:
+outputs: # Outputs we send back from this action
   hosted-url:
     description: "URL of the hosted s3 environment url"
+# Below are the main steps telling about our action and the path of js file
 runs: # predefined key word for declaring the custom action type
   using: node20 # predefined keyword for declaring enviroment for js
   main: script.js # predefined keyword for declaring starting script 
