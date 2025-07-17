@@ -11,6 +11,9 @@ inputs:
   BUILD-LOCATION:
     description: path of the build folder LOCATION
     required: true
+outputs:
+  hosted-url:
+    description: "URL of the hosted s3 environment url"
 runs: # predefined key word for declaring the custom action type
   using: node20 # predefined keyword for declaring enviroment for js
   main: script.js # predefined keyword for declaring starting script 

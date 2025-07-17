@@ -16,6 +16,9 @@ const run = () => {
     exec.exec(`aws s3 sync ${buildPath} ${s3Uri} --region ${bucketRegion}`)
     exec.exec('echo', ['Uploaded build files to S3'])
 
+    const hostedUrl = `http://${bucketName}.s3-website.${bucketRegion}.amazonaws.com`;
+    core.setOutput('hosted-url', hostedUrl);
+
 };
 
 run()
