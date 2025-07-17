@@ -1,0 +1,36 @@
+name: Using Custom actions - Javascript
+on:
+  workflow_dispatch:
+jobs:
+  deploy-s3-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Custom Action to cache dependencies and Install dependencies
+        id: custom-cache-dependencies-action
+        uses: ./.github/custom-actions/cache-dependencies
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
+      - name: upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist
+      - name: download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: ./dist
+      - name: Deploy the build files to S3 with custom javascript action
+        id: custom-javascript-action-call
+        uses: ./.github/custom-actions/javascript-action
+        with:
+          S3-BUCKET-NAME: github-actions-project1
+          S3-BUCKT-REGION: ap-south-1
+          BUILD-LOCATION: ./dist
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
